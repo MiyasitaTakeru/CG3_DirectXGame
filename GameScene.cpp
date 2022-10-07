@@ -11,6 +11,8 @@ GameScene::~GameScene()
 {
 	delete spriteBG;
 	delete object3d;
+	delete sprite1;
+	delete sprite2;
 }
 
 void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
@@ -27,14 +29,19 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// デバッグテキスト初期化
 	debugText.Initialize(debugTextTexNumber);
 
-	// テクスチャ読み込み
+	// テクスチャ1番に読み込み
 	Sprite::LoadTexture(1, L"Resources/background.png");
+	// テクスチャ2番に読み込み
+	Sprite::LoadTexture(2, L"Resources/texture.png");
 
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	// 3Dオブジェクト生成
 	object3d = Object3d::Create();
 	object3d->Update();
+	// 前景スプライト生成
+	sprite1 = Sprite::Create(2, { 0,0 });
+	sprite2 = Sprite::Create(2, { 500,500 },{1,0,0,1},{0,0},false,true);
 }
 
 void GameScene::Update()
@@ -62,6 +69,16 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_S)) { Object3d::CameraMoveVector({ 0.0f,-1.0f,0.0f }); }
 		if (input->PushKey(DIK_D)) { Object3d::CameraMoveVector({ +1.0f,0.0f,0.0f }); }
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
+	}
+
+	//前景スプライト移動
+	if (input->PushKey(DIK_SPACE)) {
+		//現在の座標を取得
+		XMFLOAT2 position = sprite1->GetPosition();
+		//移動後の座標を計算
+		position.x += 1.0f;
+		//座標の変更を反映
+		sprite1->SetPosition(position);
 	}
 
 	object3d->Update();
@@ -106,6 +123,10 @@ void GameScene::Draw()
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+
+	// 前景スプライト描画
+	sprite1->Draw();
+	sprite2->Draw();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
