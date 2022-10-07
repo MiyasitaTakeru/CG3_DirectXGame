@@ -26,7 +26,7 @@ public: // サブクラス
 	{
 		XMFLOAT3 pos; // xyz座標
 		XMFLOAT3 normal; // 法線ベクトル
-		XMFLOAT2 uv;  // uv座標
+		XMFLOAT2 uv;  // uv座標vertexCount
 	};
 
 	// 定数バッファ用データ構造体
@@ -41,7 +41,8 @@ private: // 定数
 	static const float radius;				// 底面の半径
 	static const float prizmHeight;			// 柱の高さ
 	static const int planeCount = division * 2 + division * 2;		// 面の数
-	static const int vertexCount = planeCount * 3;		// 頂点数
+	static const int vertexCount = 4;		// 頂点数
+	static const int indexCount = 3*2;	// インデックス数
 
 public: // 静的メンバ関数
 	/// <summary>
@@ -139,7 +140,7 @@ private: // 静的メンバ変数
 	// 頂点データ配列
 	static VertexPosNormalUv vertices[vertexCount];
 	// 頂点インデックス配列
-	static unsigned short indices[planeCount * 3];
+	static unsigned short indices[indexCount];
 
 private:// 静的メンバ関数
 	/// <summary>
@@ -198,6 +199,10 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="position">座標</param>
 	void SetPosition(const XMFLOAT3& position) { this->position = position; }
+
+	// ベクトルによる視点移動
+	static void  CameraMoveEyeVector(XMFLOAT3 move);
+
 
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
